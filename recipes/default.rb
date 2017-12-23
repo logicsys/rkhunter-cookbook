@@ -75,3 +75,44 @@ template '/etc/rkhunter.conf' do
   mode '0640'
   variables :config => node['rkhunter']['config']
 end
+
+# Note - this is quite brittle, and subject to breakage by up-stream changes
+# However, it's quite visible when it *does* break, and it's reasonably
+# unlikely the cron scripts are going to change much
+
+if node['rkhunter']['email_on_success']
+  if platform_family?('rhel', 'fedora')
+    ruby_block 'Add success email' do
+      block do
+        file = Chef::Util::FileEdit.new('/etc/cron.daily/rkhunter')
+        file.search_file_replace_line(/XITVAL != 0/, %{
+    if [ $XITVAL == 0 ]; then
+      /bin/cat $TMPFILE1 | /bin/mail -s "[OK] rkhunter Daily Run on $(hostname)" $MAILTO
+    else
+})
+        file.write_file
+      end
+    end
+  elsif platform_family?('debian')
+    ruby_block 'Add success email' do
+      block do
+        file = Chef::Util::FileEdit.new('/etc/cron.daily/rkhunter')
+        # NH - a bit awkward, as we're only searching and replacing on one line,
+        # so the 'else' has to make sense
+        file.search_file_replace_line(/if \[ -s "\$OUTFILE"/, %{
+        if [ ! -n "$REPORT_EMAIL" ] || [ ! -s "$OUTFILE" ]; then
+          if [ -n "$REPORT_EMAIL" ]; then
+            (
+              echo "Subject: [OK] [rkhunter] $(hostname -f) - Daily report"
+              echo "To: $REPORT_EMAIL"
+              echo ""
+              echo "No output (success)"
+            ) | /usr/sbin/sendmail $REPORT_EMAIL
+          fi
+        else
+})
+        file.write_file
+      end
+    end
+  end
+end

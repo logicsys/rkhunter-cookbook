@@ -29,6 +29,7 @@ suites:
       }
     },
     rkhunter: {
+      email_on_success: true,
       debian: {
         report_email: 'you@example.com',
         db_update_email: true,

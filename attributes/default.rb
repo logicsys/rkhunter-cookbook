@@ -1,3 +1,5 @@
+default['rkhunter']['email_on_success'] = false
+
 # /etc/rkhunter.conf values.
 config = default['rkhunter']['config']
 
