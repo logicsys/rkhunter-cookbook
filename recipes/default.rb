@@ -116,3 +116,8 @@ if node['rkhunter']['email_on_success']
     end
   end
 end
+
+# don't want extra files cluttering up cron.daily!
+file '/etc/cron.daily/rkhunter.old' do
+  action :delete
+end
