@@ -21,10 +21,18 @@ include_recipe 'yum-epel' if platform_family?('rhel')
 if platform_family?('rhel') && node['platform_version'].to_f >= 8
   # use bundled unhide bins
 
-  cookbook_file '/usr/sbin/unhide'
-  cookbook_file '/usr/sbin/unhide-posix'
-  cookbook_file '/usr/sbin/unhide-tcp'
-  cookbook_file '/usr/sbin/unhide_rb'
+  cookbook_file '/usr/sbin/unhide' do
+    mode '755'
+  end
+  cookbook_file '/usr/sbin/unhide-posix' do
+    mode '755'
+  end
+  cookbook_file '/usr/sbin/unhide-tcp' do
+    mode '755'
+  end
+  cookbook_file '/usr/sbin/unhide_rb' do
+    mode '755'
+  end
 
 else
   package 'unhide or unhide.rb' do
