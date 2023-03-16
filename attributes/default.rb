@@ -10,22 +10,22 @@ config['logfile'] = '/var/log/rkhunter.log'
 config['auto_x_detect'] = 1
 config['allow_ssh_root_user'] = 'no'
 config['allow_ssh_prot_v1'] = 0
-config['enable_tests'] = %w[ALL]
-config['disable_tests'] = %w[
+config['enable_tests'] = %w(ALL)
+config['disable_tests'] = %w(
   suspscan
   deleted_files
   packet_cap_apps
   apps
-]
-config['scriptwhitelist'] = %w[
+)
+config['scriptwhitelist'] = %w(
   /bin/egrep
   /bin/fgrep
   /bin/which
   /usr/bin/groups
   /usr/bin/ldd
   /usr/sbin/adduser
-]
-config['allowhiddendir'] = %w[
+)
+config['allowhiddendir'] = %w(
   /etc/.java
   /dev/.udev
   /dev/.udevdb
@@ -38,8 +38,8 @@ config['allowhiddendir'] = %w[
   /dev/.mount
   /etc/.git
   /etc/.bzr
-]
-config['allowhiddenfile'] = %w[
+)
+config['allowhiddenfile'] = %w(
   /usr/share/man/man1/..1.gz
   /lib*/.libcrypto.so.*.hmac
   /lib*/.libssl.so.*.hmac
@@ -64,8 +64,8 @@ config['allowhiddenfile'] = %w[
   /etc/.gitignore
   /etc/.bzrignore
   /etc/.updated
-]
-config['allowdevfile'] = %w[
+)
+config['allowdevfile'] = %w(
   /dev/shm/qb-attrd-*
   /dev/shm/qb-cfg-*
   /dev/shm/qb-cib_rw-*
@@ -85,33 +85,32 @@ config['allowdevfile'] = %w[
   /dev/shm/sem.slapd-*.stats
   /dev/shm/squid-cf*
   /dev/shm/squid-ssl_session_cache.shm
-]
+)
 config['disable_unhide'] = 1
 config['installdir'] = '/usr'
 
-case node['platform_family']
-when 'fedora', 'rhel'
+if platform_family?('fedora', 'rhel')
   config['tmpdir'] = '/var/lib/rkhunter'
   config['logfile'] = '/var/log/rkhunter/rkhunter.log'
   config['pkgmgr'] = 'RPM'
-  config['existwhitelist'] = %w[
+  config['existwhitelist'] = %w(
     /bin/ad
     /var/log/pki-ca/system
     /var/log/pki/pki-tomcat/ca/system
     /usr/bin/GET
     /usr/bin/whatis
-  ]
-  config['scriptwhitelist'] = %w[
+  )
+  config['scriptwhitelist'] = %w(
     /usr/bin/whatis
     /usr/bin/ldd
     /usr/bin/groups
     /usr/bin/GET
     /sbin/ifup
     /sbin/ifdown
-  ]
-  config['rtkt_file_whitelist'] = %w[
+  )
+  config['rtkt_file_whitelist'] = %w(
     /bin/ad
     /var/log/pki-ca/system
     /var/log/pki/pki-tomcat/ca/system
-  ]
+  )
 end

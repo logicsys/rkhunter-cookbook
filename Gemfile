@@ -15,7 +15,6 @@ gem 'berkshelf'
 # end
 
 group :style do
-  gem 'foodcritic'
   gem 'rubocop'
 end
 

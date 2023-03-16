@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: rkhunter
+# Cookbook:: rkhunter
 # Recipe:: default
 #
-# Copyright (C) 2014 Greg Palmier
+# Copyright:: (C) 2014 Greg Palmier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,31 +18,41 @@
 
 include_recipe 'yum-epel' if platform_family?('rhel')
 
-package 'unhide or unhide.rb' do
-  # The Ruby version of unhide is reportedly much better in all
-  # respects, including performance. Sometimes it is packaged
-  # separately, sometimes not. DISABLE_UNHIDE=2 disables Ruby.
-  if node['rkhunter']['config']['disable_unhide'] != 2
-    package_name value_for_platform(
-      'debian' => {
-        '~> 8.0' => 'unhide',
-        'default' => 'unhide.rb'
-      },
-      %w[opensuse opensuseleap suse] => {
-        'default' => 'unhide_rb'
-      },
-      'ubuntu' => {
-        'default' => 'unhide.rb'
-      },
-      'default' => 'unhide'
-    )
-  else
-    package_name 'unhide'
-  end
+if platform_family?('rhel') && node['platform_version'].to_f >= 8
+  # use bundled unhide bins
 
-  not_if do
-    node['rkhunter']['config']['disable_tests']
-      .include?('hidden_procs')
+  cookbook_file '/usr/sbin/unhide'
+  cookbook_file '/usr/sbin/unhide-posix'
+  cookbook_file '/usr/sbin/unhide-tcp'
+  cookbook_file '/usr/sbin/unhide_rb'
+
+else
+  package 'unhide or unhide.rb' do
+    # The Ruby version of unhide is reportedly much better in all
+    # respects, including performance. Sometimes it is packaged
+    # separately, sometimes not. DISABLE_UNHIDE=2 disables Ruby.
+    if node['rkhunter']['config']['disable_unhide'] != 2
+      package_name value_for_platform(
+        'debian' => {
+          '~> 8.0' => 'unhide',
+          'default' => 'unhide.rb',
+        },
+        %w(opensuse opensuseleap suse) => {
+          'default' => 'unhide_rb',
+        },
+        'ubuntu' => {
+          'default' => 'unhide.rb',
+        },
+        'default' => 'unhide'
+      )
+    else
+      package_name 'unhide'
+    end
+
+    not_if do
+      node['rkhunter']['config']['disable_tests']
+        .include?('hidden_procs')
+    end
   end
 end
 
@@ -65,7 +75,7 @@ template '/etc/sysconfig/rkhunter' do
   group node['root_group']
   mode '0644'
   variables :config => node['rkhunter']['rhel']
-  only_if { %w[fedora rhel].include?(node['platform_family']) }
+  only_if { platform_family?('fedora', 'rhel') }
 end
 
 template '/etc/rkhunter.conf' do

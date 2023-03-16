@@ -72,26 +72,26 @@ Vagrant.configure('2') do |config| # rubocop:disable Metrics/BlockLength
     chef.json = {
       :postfix => {
         :main => {
-          :myhostname => 'example.com'
-        }
+          :myhostname => 'example.com',
+        },
       },
       :rkhunter => {
         :debian => {
           :report_email => 'you@example.com',
           :db_update_email => true,
           :cron_db_update => true,
-          :cron_daily_run => true
+          :cron_daily_run => true,
         },
         :rhel => {
-          :mailto => 'you@example.com'
-        }
-      }
+          :mailto => 'you@example.com',
+        },
+      },
     }
 
     chef.run_list = [
       'recipe[apt]',
       'recipe[postfix]',
-      'recipe[rkhunter::default]'
+      'recipe[rkhunter::default]',
     ]
   end
 end

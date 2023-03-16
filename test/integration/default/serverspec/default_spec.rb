@@ -7,7 +7,7 @@ describe package('rkhunter') do
   it { should be_installed   }
 end
 
-describe file('/etc/default/rkhunter'), :if => %w[debian ubuntu].include?(os[:family]) do
+describe file('/etc/default/rkhunter'), :if => %w(debian ubuntu).include?(os[:family]) do
   it { should be_file }
   it { should be_mode '644' }
   it { should be_owned_by 'root' }

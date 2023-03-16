@@ -4,7 +4,7 @@ describe 'rkhunter::default' do
   platforms = {
     'centos' => '7.3.1611',
     'debian' => '8.7',
-    'ubuntu' => '16.04'
+    'ubuntu' => '16.04',
   }
 
   platforms.each do |platform, version|
